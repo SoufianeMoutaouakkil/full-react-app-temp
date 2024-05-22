@@ -1,0 +1,52 @@
+# SOME IMPORTANT NOTES:
+# ############################################################################
+# CURENT USER PROPERTIES:#####################################################
+# smapiuser@** : to get properties of the current user. ex : smapiuser@_id
+# ressourceFilter: to filter the ressource
+# userFilter: to filter the user
+# fieldsFilter: to filter the fields for update/read/create
+# queryFilter: the default query filter to merge with the user query filter
+# for ressourceFilter, userFilter and queryFilter, you can use the following structure:
+#   - field: the field to filter
+#     value: the value to filter
+#     operator: the operator to use for the filter
+# 
+# PERMISSIONS STRUCTURE RULES:##################################################
+# ---- the permissions are structured in 4 levels and each surcharge the previous one:
+#       1- [ressourceName].default
+#       3- [ressourceName].[actionName].default
+#       2- [ressourceName].[roleName]
+#       4- [ressourceName].actionName.[roleName]
+# PERMISSIONS INHERITANCE:######################################################
+# ---- to prevent the inheritance in specific level, you can use the no-inherit value
+# GUEST ROLE: ##################################################################
+# ---- 'guest' is a built-in role for inauthenticated users.
+# ---- It should be enabled in .env file as "GUEST_ENABLED=true"
+users:
+    schema:
+        timestamps: true
+        fields:
+            fullname:
+                type: String
+            username:
+                type: String
+                required: true
+                unique: true
+            role:
+                type: String
+                required: true
+                enum: "'admin', 'manager', 'user'"
+                default: "user"
+            password:
+                type: String
+                required: true
+    permissions:
+        default:
+            enabled: true
+            ressourceFilter:
+                field: _id
+                value: smapiuser@_id
+        guest:
+            enabled: false
+        admin:
+            ressourceFilter: no-inherit
